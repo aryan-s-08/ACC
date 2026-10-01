@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advanced Competitive Coding - Algorithm Reference</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 14mm 18mm 14mm;
+    @bottom-right {
+      content: counter(page);
+      font-size: 9pt;
+      color: #718096;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a202c;
+    line-height: 1.45;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    font-size: 20pt;
+    font-weight: 700;
+    color: #2b6cb0;
+    border-bottom: 2px solid #bee3f8;
+    padding-bottom: 6px;
+    margin-top: 0;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .algo-card {
+    page-break-inside: avoid;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+    background-color: #ffffff;
+  }
+
+  .algo-title {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #2c5282;
+    margin-top: 0;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .meta {
+    font-size: 8.5pt;
+    color: #4a5568;
+    margin-bottom: 8px;
+    background-color: #edf2f7;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  pre {
+    background-color: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 8pt;
+    line-height: 1.35;
+    margin: 8px 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .io-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .io-item {
+    background: #edf2f7;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 8pt;
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  .io-label {
+    font-weight: 700;
+    font-family: sans-serif;
+    color: #4a5568;
+    margin-bottom: 2px;
+    font-size: 7.5pt;
+    text-transform: uppercase;
+  }
+
+  @media print {
+    body {
+      background: none;
+    }
+    .algo-card {
+      box-shadow: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Advanced Competitive Coding Reference Sheet</h1>
+
+<!-- 1. Leaders in an Array -->
+<div class="algo-card">
+  <div class="algo-title">1. Leaders in an Array</div>
+  <div class="meta"><b>Approach:</b> Right-to-Left Traversal &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(N)</div>
+  <pre>import java.util.*;
+
+public class LeadersInArray {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        ArrayList&lt;Integer&gt; leaders = new ArrayList&lt;&gt;();
+        int maxRight = arr[n - 1];
+        leaders.add(maxRight);
+
+        for (int i = n - 2; i >= 0; i--) {
+            if (arr[i] >= maxRight) {
+                leaders.add(arr[i]);
+                maxRight = arr[i];
+            }
+        }
+
+        Collections.reverse(leaders);
+        for (int x : leaders) System.out.print(x + " ");
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>6<br>16 17 4 3 5 2</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>17 5 2</div>
+  </div>
+</div>
+
+<!-- 2. Block Swap Algorithm -->
+<div class="algo-card">
+  <div class="algo-title">2. Block Swap Algorithm (Left Array Rotation)</div>
+  <div class="meta"><b>Approach:</b> In-place Iterative Block Swapping &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class BlockSwapRotation {
+    static void swap(int[] arr, int fi, int si, int d) {
+        for (int i = 0; i < d; i++) {
+            int temp = arr[fi + i];
+            arr[fi + i] = arr[si + i];
+            arr[si + i] = temp;
+        }
+    }
+
+    static void leftRotate(int[] arr, int d, int n) {
+        if (d == 0 || d == n) return;
+        int i = d, j = n - d;
+        while (i != j) {
+            if (i < j) {
+                swap(arr, d - i, d + j - i, i);
+                j -= i;
+            } else {
+                swap(arr, d - i, d, j);
+                i -= j;
+            }
+        }
+        swap(arr, d - i, d, i);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+        int d = sc.nextInt() % n;
+
+        leftRotate(arr, d, n);
+        for (int x : arr) System.out.print(x + " ");
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>7<br>1 2 3 4 5 6 7<br>2</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>3 4 5 6 7 1 2</div>
+  </div>
+</div>
+
+<!-- 3. Swap Two Nibbles in a Byte -->
+<div class="algo-card">
+  <div class="algo-title">3. Swap Two Nibbles in a Byte</div>
+  <div class="meta"><b>Approach:</b> Bitwise Masking and Shifting &bull; <b>Time:</b> O(1) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class SwapNibbles {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int result = ((n & 0x0F) << 4) | ((n & 0xF0) >> 4);
+        System.out.println(result);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>100</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>70</div>
+  </div>
+</div>
+
+<!-- 4. Majority Element -->
+<div class="algo-card">
+  <div class="algo-title">4. Majority Element (Boyer-Moore Voting)</div>
+  <div class="meta"><b>Approach:</b> Boyer-Moore Voting Algorithm &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class MajorityElement {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        int candidate = 0, count = 0;
+        for (int num : arr) {
+            if (count == 0) candidate = num;
+            count += (num == candidate) ? 1 : -1;
+        }
+
+        count = 0;
+        for (int num : arr) {
+            if (num == candidate) count++;
+        }
+
+        System.out.println((count > n / 2) ? candidate : -1);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>9<br>3 3 1 3 2 3 3 4 3</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>3</div>
+  </div>
+</div>
+
+<!-- 5. Maximum Product Subarray -->
+<div class="algo-card">
+  <div class="algo-title">5. Maximum Product Subarray</div>
+  <div class="meta"><b>Approach:</b> Min/Max Dynamic Programming &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class MaxProductSubarray {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        int maxProd = arr[0], minProd = arr[0], result = arr[0];
+        for (int i = 1; i < n; i++) {
+            if (arr[i] < 0) {
+                int temp = maxProd;
+                maxProd = minProd;
+                minProd = temp;
+            }
+            maxProd = Math.max(arr[i], maxProd * arr[i]);
+            minProd = Math.min(arr[i], minProd * arr[i]);
+            result = Math.max(result, maxProd);
+        }
+
+        System.out.println(result);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>3<br>-2 3 -4</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>24</div>
+  </div>
+</div>
+
+<!-- 6. Maximum Sum of Hourglass in Matrix -->
+<div class="algo-card">
+  <div class="algo-title">6. Maximum Sum of Hourglass in Matrix</div>
+  <div class="meta"><b>Approach:</b> Fixed-Pattern Matrix Traversal &bull; <b>Time:</b> O(R &times; C) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class HourglassMaxSum {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int r = sc.nextInt(), c = sc.nextInt();
+        int[][] mat = new int[r][c];
+
+        for (int i = 0; i < r; i++)
+            for (int j = 0; j < c; j++)
+                mat[i][j] = sc.nextInt();
+
+        if (r < 3 || c < 3) {
+            System.out.println(-1);
+            sc.close();
+            return;
+        }
+
+        int maxSum = Integer.MIN_VALUE;
+        for (int i = 0; i <= r - 3; i++) {
+            for (int j = 0; j <= c - 3; j++) {
+                int sum = mat[i][j] + mat[i][j + 1] + mat[i][j + 2]
+                        + mat[i + 1][j + 1]
+                        + mat[i + 2][j] + mat[i + 2][j + 1] + mat[i + 2][j + 2];
+                maxSum = Math.max(maxSum, sum);
+            }
+        }
+
+        System.out.println(maxSum);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>3 3<br>1 1 1<br>0 1 0<br>1 1 1</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>7</div>
+  </div>
+</div>
+
+<!-- 7. Longest Sequence of 1s After Flipping a Bit -->
+<div class="algo-card">
+  <div class="algo-title">7. Longest Sequence of 1s After Flip</div>
+  <div class="meta"><b>Approach:</b> Two-Pointer Sliding Window &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class LongestOnesAfterFlip {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        int left = 0, zeros = 0, maxLen = 0;
+        for (int right = 0; right < n; right++) {
+            if (arr[right] == 0) zeros++;
+            while (zeros > 1) {
+                if (arr[left] == 0) zeros--;
+                left++;
+            }
+            maxLen = Math.max(maxLen, right - left + 1);
+        }
+
+        System.out.println(maxLen);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>10<br>1 1 0 1 1 0 1 1 1 0</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>6</div>
+  </div>
+</div>
+
+<!-- 8. Maximum Equilibrium Sum -->
+<div class="algo-card">
+  <div class="algo-title">8. Maximum Equilibrium Sum / Balanced Partition</div>
+  <div class="meta"><b>Approach:</b> Running Prefix &amp; Suffix Comparison &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(N)</div>
+  <pre>import java.util.Scanner;
+
+public class MaxEquilibriumSum {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        long[] arr = new long[n];
+        long total = 0;
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextLong();
+            total += arr[i];
+        }
+
+        long left = 0, ans = -1;
+        for (int i = 0; i < n; i++) {
+            left += arr[i];
+            long right = total - left;
+            if (left == right) {
+                ans = Math.max(ans, left);
+            }
+        }
+
+        System.out.println(ans);
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>6<br>3 1 2 3 3 0</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>6</div>
+  </div>
+</div>
+
+<!-- 9. Lexicographically First Palindromic String -->
+<div class="algo-card">
+  <div class="algo-title">9. Lexicographically First Palindromic String</div>
+  <div class="meta"><b>Approach:</b> Character Frequency Array Construction &bull; <b>Time:</b> O(N) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class LexFirstPalindrome {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.next();
+        int[] freq = new int[26];
+        for (char c : s.toCharArray()) freq[c - 'a']++;
+
+        int oddCount = 0;
+        char mid = 0;
+        for (int i = 0; i < 26; i++) {
+            if (freq[i] % 2 != 0) {
+                oddCount++;
+                mid = (char) (i + 'a');
+            }
+        }
+
+        if (oddCount > 1) {
+            System.out.println("Not Possible");
+            sc.close();
+            return;
+        }
+
+        StringBuilder left = new StringBuilder();
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < freq[i] / 2; j++) {
+                left.append((char) (i + 'a'));
+            }
+        }
+
+        StringBuilder result = new StringBuilder(left);
+        if (oddCount == 1) result.append(mid);
+        result.append(new StringBuilder(left).reverse());
+
+        System.out.println(result.toString());
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>aabbcc</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>abccba</div>
+  </div>
+</div>
+
+<!-- 10. Karatsuba Multiplication Algorithm -->
+<div class="algo-card">
+  <div class="algo-title">10. Karatsuba Multiplication Algorithm</div>
+  <div class="meta"><b>Approach:</b> Divide &amp; Conquer BigInteger &bull; <b>Time:</b> &Theta;(N<sup>1.585</sup>) &bull; <b>Space:</b> O(log N)</div>
+  <pre>import java.math.BigInteger;
+import java.util.Scanner;
+
+public class KaratsubaMultiplication {
+    static BigInteger multiply(BigInteger x, BigInteger y) {
+        int n = Math.max(x.toString().length(), y.toString().length());
+        if (n <= 4) return x.multiply(y);
+
+        int m = n / 2;
+        BigInteger p = BigInteger.TEN.pow(m);
+
+        BigInteger a = x.divide(p);
+        BigInteger b = x.mod(p);
+        BigInteger c = y.divide(p);
+        BigInteger d = y.mod(p);
+
+        BigInteger ac = multiply(a, c);
+        BigInteger bd = multiply(b, d);
+        BigInteger adbc = multiply(a.add(b), c.add(d)).subtract(ac).subtract(bd);
+
+        return ac.multiply(BigInteger.TEN.pow(2 * m)).add(adbc.multiply(p)).add(bd);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        BigInteger x = sc.nextBigInteger();
+        BigInteger y = sc.nextBigInteger();
+        System.out.println(multiply(x, y));
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>9999<br>9999</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>99980001</div>
+  </div>
+</div>
+
+<!-- 11. Booth's Multiplication Algorithm -->
+<div class="algo-card">
+  <div class="algo-title">11. Booth's Multiplication Algorithm</div>
+  <div class="meta"><b>Approach:</b> Bitwise Shift-and-Add Multiplication &bull; <b>Time:</b> O(log B) &bull; <b>Space:</b> O(1)</div>
+  <pre>import java.util.Scanner;
+
+public class BoothAlgo {
+    public static int booth(int a, int b) {
+        int sign = ((a &lt; 0) ^ (b &lt; 0)) ? -1 : 1;
+        a = Math.abs(a);
+        b = Math.abs(b);
+        int res = 0;
+        while (b != 0) {
+            if ((b & 1) == 1) {
+                res += a;
+            }
+            a &lt;&lt;= 1;
+            b &gt;&gt;= 1;
+        }
+        return res * sign;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        System.out.println(booth(a, b));
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>-6<br>7</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>-42</div>
+  </div>
+</div>
+
+<!-- 12. Euclid's GCD Algorithm -->
+<div class="algo-card">
+  <div class="algo-title">12. Euclid's Algorithm (Greatest Common Divisor)</div>
+  <div class="meta"><b>Approach:</b> Euclidean Recursive Modulo &bull; <b>Time:</b> O(log(min(A, B))) &bull; <b>Space:</b> O(log(min(A, B)))</div>
+  <pre>import java.util.Scanner;
+
+public class EuclidAlgo {
+    public static int gcd(int a, int b) {
+        if (a == 0) return b;
+        return gcd(b % a, a);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        System.out.println(gcd(a, b));
+        sc.close();
+    }
+}</pre>
+  <div class="io-box">
+    <div class="io-item"><div class="io-label">Sample Input</div>48<br>18</div>
+    <div class="io-item"><div class="io-label">Sample Output</div>6</div>
+  </div>
+</div>
+
+</body>
+</html>
